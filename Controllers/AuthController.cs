@@ -3,33 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using XStcoker2_Backend.Data;
 using XStcoker2_Backend.Models;
 
 namespace XStcoker2_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : ControllerBase {
-        private readonly INoteRepository _repository;
+    public class AuthController : ControllerBase {
+        private readonly AuthenticationContext _context;
 
-        public TestController(INoteRepository repository)
+        public AuthController(AuthenticationContext context)
         {
-            this._repository = repository;
+            this._context = context;
         }
 
         // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<INote>> Get()
-        {
-            return this._repository.GetList().ToList<INote>();
-        }
+        //[HttpGet]
+        //public ActionResult<IEnumerable<INote>> Get()
+        //{
+        //    return this._repository.GetList().ToList<INote>();
+        //}
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<INote> Get(int id)
-        {
-            return new  ActionResult<INote>(this._repository.GetNote(id));
-        }
+        //[HttpGet("{id}")]
+        //public ActionResult<INote> Get(int id)
+        //{
+        //    return new  ActionResult<INote>(this._repository.GetNote(id));
+        //}
 
         // POST api/values
         [HttpPost]

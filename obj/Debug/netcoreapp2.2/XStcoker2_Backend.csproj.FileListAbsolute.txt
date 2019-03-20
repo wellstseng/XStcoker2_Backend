@@ -12,3 +12,17 @@ D:\Github\XStcoker2_Backend\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_
 D:\Github\XStcoker2_Backend\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.RazorTargetAssemblyInfo.cache
 D:\Github\XStcoker2_Backend\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.dll
 D:\Github\XStcoker2_Backend\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.pdb
+D:\GitHub\XStcoker2_Backend\bin\Debug\netcoreapp2.2\XStcoker2_Backend.deps.json
+D:\GitHub\XStcoker2_Backend\bin\Debug\netcoreapp2.2\XStcoker2_Backend.runtimeconfig.json
+D:\GitHub\XStcoker2_Backend\bin\Debug\netcoreapp2.2\XStcoker2_Backend.runtimeconfig.dev.json
+D:\GitHub\XStcoker2_Backend\bin\Debug\netcoreapp2.2\XStcoker2_Backend.dll
+D:\GitHub\XStcoker2_Backend\bin\Debug\netcoreapp2.2\XStcoker2_Backend.pdb
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.csprojAssemblyReference.cache
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.csproj.CoreCompileInputs.cache
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.RazorAssemblyInfo.cache
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.RazorAssemblyInfo.cs
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.AssemblyInfoInputs.cache
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.AssemblyInfo.cs
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.RazorTargetAssemblyInfo.cache
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.dll
+D:\GitHub\XStcoker2_Backend\obj\Debug\netcoreapp2.2\XStcoker2_Backend.pdb
