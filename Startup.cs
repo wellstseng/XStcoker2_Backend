@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,17 @@ namespace XStcoker2_Backend
             services.AddDbContext<AuthenticationContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AuthenticationContext>();
+            services.Configure<IdentityOptions>(option =>
+            {
+                option.Password.RequireDigit = false;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = false;
+                option.Password.RequireLowercase = false;
+                option.Password.RequiredLength = 4;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +54,7 @@ namespace XStcoker2_Backend
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
