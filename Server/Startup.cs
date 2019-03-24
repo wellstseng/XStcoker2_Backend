@@ -32,7 +32,17 @@ namespace XStcoker2_Backend
             services.AddDbContext<AuthenticationContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc();
-
+            services.AddCors(options =>
+            {
+                // CorsPolicy 是自訂的 Policy 名稱
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AuthenticationContext>();
             services.Configure<IdentityOptions>(option =>
@@ -43,6 +53,7 @@ namespace XStcoker2_Backend
                 option.Password.RequireLowercase = false;
                 option.Password.RequiredLength = 4;
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,9 +63,9 @@ namespace XStcoker2_Backend
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
+            
             app.UseAuthentication();
+            app.UseCors("CorsPolicy");
             app.UseMvc();
         }
     }

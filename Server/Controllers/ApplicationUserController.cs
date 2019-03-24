@@ -23,11 +23,16 @@ namespace XStcoker2_Backend.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<Object> PostRegisterApplicationUser(ApplicationUserModel model)
+        public async Task<IActionResult> PostRegisterApplicationUser(ApplicationUserModel model)
         {
+            if (model.Password != model.ConfirmPassword)
+            {
+                return this.BadRequest();
+            }
+
             var applicationUser = new ApplicationUser()
             {
-                UserName = model.UserName,
+                UserName = model.FullName,
                 Email = model.Email,
                 FullName = model.FullName
             };
@@ -39,7 +44,7 @@ namespace XStcoker2_Backend.Controllers
             }
             catch(Exception ex) {
                 throw ex;
-            }
+            }            
         }
     }
 }
