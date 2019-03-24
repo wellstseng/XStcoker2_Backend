@@ -107,7 +107,7 @@ export const NB_CORE_PROVIDERS = [
     strategies: [
       NbPasswordAuthStrategy.setup({
         name: 'email',
-        baseEndpoint: 'https://localhost:44389/api/ApplicationUser/'
+        baseEndpoint: 'https://localhost:44389/api/ApplicationUser/',
       }),
     ],
     forms: {
