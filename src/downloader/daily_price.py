@@ -118,7 +118,7 @@ class DailyPriceFetcher:
                     }) 
                 print("upsert latest date: " , str(result))
 
-    def load_range(self, marketType:str, urlFmt:str, headers:str, startDate:str=None, endDate:str=None, parseToDB= False, tryLoad=True):
+    def load_range(self, marketType:str, urlFmt:str, headers:str, startDate:str=None, endDate:str=None):
         if startDate == None:
             startDate = datetime.now().strftime("%Y/%m/%d")
         if endDate == None:
@@ -144,33 +144,27 @@ class DailyPriceFetcher:
 
             if os.path.isfile(file_path):
                 print("Exist file. Do not load again")
-            else:
-                if tryLoad :
-                    print('Load csv date:{}  to {}'.format(src_date, file_path), end="\n")
-                    url = urlFmt.format(src_date)      
-                    print('Load csv date:{} from {}  to {}'.format(src_date, url, file_path), end="\n")     
-                    req = requests.get(url, headers=headers)
-                    req.encoding = 'big5'
-                    text = req.text
-                    text_arr = [i.translate({ord(' '): None}) 
-                                for i in text.split('\n') 
-                                    if len(i.split('",')) == 17]
+            else:                
+                print('Load csv date:{}  to {}'.format(src_date, file_path), end="\n")
+                url = urlFmt.format(src_date)      
+                print('Load csv date:{} from {}  to {}'.format(src_date, url, file_path), end="\n")     
+                req = requests.get(url, headers=headers)
+                req.encoding = 'big5'
+                text = req.text
+                text_arr = [i.translate({ord(' '): None}) 
+                            for i in text.split('\n') 
+                                if len(i.split('",')) == 17]
 
-                    if len(text_arr) > 0:                    
-                        latest_date = single_date.strftime("%Y%m%d")
-                        print("latest date: ", latest_date)
-                        with open(file_path, 'a+', encoding='utf8') as f:                        
-                            initialize_text = "".join(text_arr) 
-                            f.write(initialize_text)
-                            f.close()
-                            print('Load Done')
-                    else:
-                        print('No data')
-                    print("Sleep 10")
-                    time.sleep(10)
-        '''
-            if parseToDB:
-                print("Parse file {0} to db".format(file_path))
-                self.parse_file_to_db(marketType, file_path)           
-        self.check_update_latest_day(latest_date)
-        '''
+                if len(text_arr) > 0:                    
+                    latest_date = single_date.strftime("%Y%m%d")
+                    print("latest date: ", latest_date)
+                    with open(file_path, 'a+', encoding='utf8') as f:                        
+                        initialize_text = "".join(text_arr) 
+                        f.write(initialize_text)
+                        f.close()
+                        print('Load Done')
+                else:
+                    print('No data')
+                print("Sleep 10")
+                time.sleep(10)
+

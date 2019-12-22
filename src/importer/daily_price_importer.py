@@ -16,6 +16,7 @@ import define
 from mongo.mongo import MongoManager
 from define import DB_KEY as DB_KEY
 import pprint
+import numpy as np
 
 
 from downloader.stocklist import StockListHolder
@@ -81,22 +82,29 @@ class DailyPriceImporter:
 
     def build_query(self):
         print("\nstart build query......")
-        all_dfs=0
+        stock_cnt=0
         keys = list(self.dfs.keys())
         total = len(self.stockList)
-
-        for file_date in keys:
-            df = self.dfs[file_date]
+        key_len = len(keys)
+        for index in self.stockList:
             cnt = 0
-           
-            year_month = file_date[:4]
-            if year_month not in self.querys:
-                self.querys[year_month] = {}
-            for index, series in df.iterrows():
-                try:    
+            print("\r", end="")
+            for file_date in keys:
+                df = self.dfs[file_date]  
+                if index not in df.index:
+                    continue    
+     
+                year_month = file_date[:4]
+                if year_month not in self.querys:
+                    self.querys[year_month] = {}
+
+                
+                series = df.loc[index]
+                
+                try:   
+                        
+                    # print("\r", end="")
                     
-                    print("\r", end="")
-                    series = df.loc[index]
                     suspend = "--" in str(series["開盤價"])
                     o = float(str(series["開盤價"]).replace(',','')) if not suspend else -1
                     h = float(str(series["最高價"]).replace(',','')) if not suspend else -1
@@ -104,8 +112,7 @@ class DailyPriceImporter:
                     c = float(str(series["收盤價"]).replace(',','')) if not suspend else -1
                     
                     name =  series["證券名稱"]
-                    if index not in self.stockList:
-                        continue
+                
                     volume = int(round(int(series["成交股數"].replace(',',''))*0.001, 0)) if not suspend else 0
                     turnover = round(int(series["成交金額"].replace(',',''))*0.00000001, 3)  if not suspend else 0
                     transaction = int(series["成交筆數"].replace(',',''))  if not suspend else 0
@@ -121,19 +128,22 @@ class DailyPriceImporter:
                     self.querys[year_month][index]["$set"]["items.{0}.{1}".format(file_date, DB_KEY.TRANSACTION)]=transaction
                     
                     cnt += 1
-                    if self.LOG_ENABLE:
-                        sys.stdout.flush()     
-                        print("{0:10} {1:8} => {2:6}/{3:6}    {4:5}".format(file_date, index, cnt, total,all_dfs ),end='')
+                    # if self.LOG_ENABLE:
+                    #     sys.stdout.flush()     
+                    #     print("file date {0:10} {1:4}/{2:4} ".format(file_date, cnt, key_len ),end='')
                     
                 except Exception as e:
                     print("fail date:{} \n msg:{} \n data:{}".format(file_date, e, series))
                     self.mongo_mgr.upsert("stock", "Logger", {DB_KEY.LOG_DATE:datetime.now().strftime("%Y%m%d")}, 
                         {"$push":{DB_KEY.PARSE_LOG:"build query fail date:{} \n msg:{} \n data:{}".format(file_date, e, series)}})
                     break            
-            del self.dfs[file_date]
-            all_dfs+=1
-            print("      Done")
-            # pprint.pprint("      querys: {}".format(self.querys))
+            
+            stock_cnt+=1
+            if self.LOG_ENABLE:
+                sys.stdout.flush() 
+                print("Stock:{}     Done    cnt  {}/{}".format(index, stock_cnt, total), end ='')
+        print('\n')
+        #pprint.pprint("querys: {}".format(self.querys))
 
 
     def execute_query(self):
@@ -156,7 +166,7 @@ class DailyPriceImporter:
                     print("{0:10} => {1:6}/{2:6}".format(id, cnt, total ),end='')
             date_cnt+=1
         
-        print("\n")
+        print("\nFinish")
 
     def import_to_mongo(self, market_type:str, start_date:str=None, end_date:str=None):
         if start_date == None:
