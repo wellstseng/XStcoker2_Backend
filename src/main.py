@@ -9,7 +9,7 @@ dailyPriceFetcher = DailyPriceFetcher()
 
 from importer.daily_price_importer import DailyPriceImporter
 dailyPriceImporter = DailyPriceImporter()
-dailyPriceImporter.import_to_mongo("twse", '2017/09/07', '2004/02/10')
+dailyPriceImporter.import_to_mongo("twse", '2011/08/10', '2004/02/10')
 
 
 # from datetime import timedelta, date, datetime

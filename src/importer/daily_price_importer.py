@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from bson.objectid import ObjectId
 import requests
-import io, gc
+import io, gc,psutil
 import os.path
 import time
 from datetime import timedelta, date, datetime
@@ -16,6 +16,7 @@ import define
 from mongo.mongo import MongoManager
 from define import DB_KEY as DB_KEY
 import pprint
+
 
 from downloader.stocklist import StockListHolder
 class DailyPriceImporter:
@@ -81,9 +82,13 @@ class DailyPriceImporter:
     def build_query(self):
         print("\nstart build query......")
         all_dfs=0
-        for file_date, df in self.dfs.items():
+        keys = list(self.dfs.keys())
+        total = len(self.stockList)
+
+        for file_date in keys:
+            df = self.dfs[file_date]
             cnt = 0
-            total = len(self.stockList)
+           
             year_month = file_date[:4]
             if year_month not in self.querys:
                 self.querys[year_month] = {}
@@ -124,7 +129,8 @@ class DailyPriceImporter:
                     print("fail date:{} \n msg:{} \n data:{}".format(file_date, e, series))
                     self.mongo_mgr.upsert("stock", "Logger", {DB_KEY.LOG_DATE:datetime.now().strftime("%Y%m%d")}, 
                         {"$push":{DB_KEY.PARSE_LOG:"build query fail date:{} \n msg:{} \n data:{}".format(file_date, e, series)}})
-                    break
+                    break            
+            del self.dfs[file_date]
             all_dfs+=1
             print("      Done")
             # pprint.pprint("      querys: {}".format(self.querys))
@@ -178,11 +184,17 @@ class DailyPriceImporter:
         pprint.pprint("date parse:\n{}".format(date_batch))
         for d in date_batch:
             print("execute start: {}   to end:{}".format(d['start'], d['end']))
+            process = psutil.Process(os.getpid())
+            print("process memory before: {}", process.memory_info().rss / 1024 / 1024)  # in bytes 
+            
             self.dfs={}
             self.querys={}
             self.load_df_files(market_type, d['start'], d['end'])  
             self.build_query()
             self.execute_query()
+            del self.dfs
+            del self.querys
             gc.collect()
+            print("process memory after: {}", process.memory_info().rss / 1024 / 1024)  # in bytes 
         print("All Done")
     
