@@ -119,7 +119,7 @@ class DailyPriceImporter:
 
                     if index not in self.querys[year_month]:
                         self.querys[year_month][index] = {"$set":{DB_KEY.NAME:name}}
-
+                    self.querys[year_month][index]["$set"]["items.{0}.{1}".format(file_date, DB_KEY.OPEN)]=o
                     self.querys[year_month][index]["$set"]["items.{0}.{1}".format(file_date, DB_KEY.HIGH)]=h
                     self.querys[year_month][index]["$set"]["items.{0}.{1}".format(file_date, DB_KEY.LOW)]=l
                     self.querys[year_month][index]["$set"]["items.{0}.{1}".format(file_date, DB_KEY.CLOSE)]=c
@@ -151,7 +151,7 @@ class DailyPriceImporter:
         date_total = len(self.querys)
         date_cnt = 0
         for year, all_querys in  self.querys.items():    
-            print("\n")    
+            print("year:{}\n".format(year))    
             total = len(all_querys)    
             cnt=0
             for id, query in all_querys.items():            
@@ -178,7 +178,10 @@ class DailyPriceImporter:
         s = start_date.split("/")
         e= end_date.split("/")
         start_date = date(int(s[0]), int(s[1]), int(s[2]))
-        end_date = date(int(e[0]), int(e[1]), int(e[2]))
+        end_date = date(int(e[0]), int(e[1]), int(e[2])) 
+
+        if start_date == end_date:
+            end_date = end_date - timedelta(days=1)
         
         self.stockList = StockListHolder.read_stock_ids(define.MarketType.get_id(market_type))
 
@@ -186,7 +189,7 @@ class DailyPriceImporter:
         temp_end = None
         temp_start = start_date
         while (temp_end != end_date):
-            temp_end = temp_start - timedelta(days=30)
+            temp_end = temp_start - timedelta(days=360)
             if temp_end < end_date:
                 temp_end = end_date
             date_batch.append({'start':temp_start, 'end':temp_end})            
