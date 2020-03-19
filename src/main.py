@@ -93,16 +93,19 @@ def _calcCost(records):
 
 def writeToExcel(dfs):
     sortDict = collections.OrderedDict(sorted(dfs.items()))
-    filePath = 'D:/output.xlsx'
+    filePath = 'D:/歷史損益.xlsx'
     try:
         if os.path.isfile(filePath):
             os.remove(filePath)
     
-        with pd.ExcelWriter(filePath) as writer:  # doctest: +SKIP
+        with pd.ExcelWriter(filePath, engine='xlsxwriter') as writer:  # doctest: +SKIP
             for stkId, df in sortDict.items():
-                print("write stock data:{}".format(stkId))
+                print("write stock data:{}".format(stkId))                
                 df.to_excel(writer, sheet_name=stkId) 
-                
+                book = writer.book
+                worksheet = writer.sheets[stkId]
+                worksheet.set_column(1, 1, 20)
+            writer.save()
     except IOError:
         print ("Could not open file! Please close Excel!")
 
