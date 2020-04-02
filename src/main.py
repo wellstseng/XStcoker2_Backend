@@ -117,29 +117,15 @@ for stkId, df in stockDataframe.items():
     df["買進總成本"] = pd.Series(0, index=df.index, dtype=int)
    
     buy = []
-    financing = []
-    margin = []
     for idx, row in df.iterrows():
         if row["交易別"] == "現股":
             if row["買賣"] == "買":
                 buy.append(row)
-            elif row["買賣"] == "賣":                
+            elif row["買賣"] == "賣":
+                
                 transactionAmount = row["成交股數"]
                 q = []
                 buyRecord = _getQueueData(q, buy, 0, transactionAmount)
-                
-                cost = _calcCost(buyRecord)
-                if cost > 0:
-                    profAndLoss = row["淨收金額"] - cost
-                    df.at[idx, "損益"] = profAndLoss
-                    df.at[idx, "買進總成本"] =cost
-        elif row["交易別"] == "融資":
-            if row["買賣"] == "買":
-                financing.append(row)
-            elif row["買賣"] == "賣":
-                transactionAmount = row["成交股數"]
-                q = []
-                buyRecord = _getQueueData(q, financing, 0, transactionAmount)
                 
                 cost = _calcCost(buyRecord)
                 if cost > 0:
